@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'auth' # @Mansur Подключаем приложение введя название папки
+    'custom_auth', # @Mansur Подключаем приложение введя название папки
     'rest_framework',  # @Mansur Подключаем rest api приложение
 ]
 
