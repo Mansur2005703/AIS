@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-sqfstfe3xhlr()z^(_jf3m+9^p7k_kfx7e46(wfgg^$^p^+))*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']  # @Mansur Поддерживаем все порты
 
 
 # Application definition
@@ -37,7 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'auth' # @Mansur Подключаем приложение введя название папки
+    'rest_framework',  # @Mansur Подключаем rest api приложение
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -74,6 +82,7 @@ WSGI_APPLICATION = 'django_admin.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
+    # @Mansur Пока менять не надо. Потом перенесем на mysql. Этот вариант легче дебажить.
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
