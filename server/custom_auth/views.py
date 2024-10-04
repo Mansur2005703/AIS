@@ -58,10 +58,8 @@ from rest_framework import status
 
 def token_required(func):
     @wraps(func)
-    def wrapper(request, *args, **kwargs):
-        token = request.headers.get("Auth")
-
-        print(f"Authorization Header: {token}")
+    def wrapper(*args, **kwargs):
+        token = args[1].headers['Auth']
         if not token:
             return Response({"error": "Authentication token required"}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -69,12 +67,12 @@ def token_required(func):
         if token not in valid_tokens:
             return Response({"error": "Invalid token"}, status=status.HTTP_401_UNAUTHORIZED)
 
-        request.user = {
+        args[1].user = {
             "iin": "0503", 
             "password": "0503"
         }
 
-        return func(request, *args, **kwargs)
+        return func(*args, **kwargs)
 
     return wrapper
 
