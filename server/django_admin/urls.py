@@ -20,6 +20,5 @@ from django.urls import include, path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    
     path('auth/', include('custom_auth.urls')) # @Mansur Добавляем приложение по пути /auth. Док: https://metanit.com/python/django/3.6.php
 ]

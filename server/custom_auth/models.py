@@ -1,35 +1,32 @@
 from django.db import models
 
 class Speciality(models.Model): #Специальность
-    title = models.CharField(max_length=100,)
+    title = models.CharField(max_length=70)
+    short_title = models.CharField(max_length=30, null=True)
+    code = models.CharField(max_length=30, null=True)
     
 class Group(models.Model): #Группа
-    title = models.CharField(max_length=100,)
+    title = models.CharField(max_length=50)
     teacher_id = models.ForeignKey('Teacher', on_delete=models.CASCADE)
     speciality_id = models.ForeignKey('Speciality', on_delete=models.CASCADE)
-    
-class Audience(models.Model): #Аудитория
-    number = models.CharField(max_length=100,)
 
 class Subject(models.Model): #Предмет
-    title = models.CharField(max_length=100,)
+    title = models.CharField(max_length=70)
 
 class Student(models.Model): #Студент
-    iin = models.CharField(max_length=100,)
+    iin = models.CharField(max_length=100)
     group_id = models.ForeignKey('Group', on_delete=models.CASCADE) 
 
 class Teacher(models.Model): #Преподаватель
-    iin = models.CharField(max_length=100,)
-    password = models.CharField(max_length=100,null=True)  
+    iin = models.CharField(max_length=8)
+    password = models.CharField(max_length=70,null=True)  
     
-class AuthToken(models.Model):
+class TeacherAuthToken(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     token = models.CharField(max_length=255, unique=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    expires_at = models.DateTimeField()
-
-    def __str__(self):
-        return f"Token for {self.teacher.iin}"
+    
+class Audience(models.Model): #Аудитория
+    title = models.CharField(max_length=70)
 
 class TeacherAuidience(models.Model): #Преподаватель-аудитория
     teacher_id = models.ForeignKey('Teacher', on_delete=models.CASCADE)
@@ -41,16 +38,16 @@ class TeacherSubject(models.Model): #Преподаватель-предмет
     
 class StudentInfo(models.Model): #Информация о студенте
     student_id = models.ForeignKey('Student', on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=100, null=True)
-    last_name = models.CharField(max_length=100, null=True)
-    patronymic = models.CharField(max_length=100, null=True)
-    phone = models.CharField(max_length=100, null=True)
+    first_name = models.CharField(max_length=50, null=True)
+    last_name = models.CharField(max_length=50, null=True)
+    patronymic = models.CharField(max_length=50, null=True)
+    phone = models.CharField(max_length=20, null=True)
     birthday = models.DateField(null=True)
     
 class TeacherInfo(models.Model): #Информация о преподавателе
     teacher_id = models.ForeignKey('Teacher', on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=100, null=True)
-    last_name = models.CharField(max_length=100, null=True)
-    patronymic = models.CharField(max_length=100, null=True)
-    phone = models.CharField(max_length=100, null=True)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    patronymic = models.CharField(max_length=50, null=True)
+    phone = models.CharField(max_length=20, null=True)
     birthday = models.DateField(null=True)
