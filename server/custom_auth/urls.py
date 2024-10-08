@@ -10,6 +10,6 @@ urlpatterns = [
     # path('login/', views.login), # @Mansur Добавляем эндпоинт авторизации. Просто к примеру. 
     path('teacher/', TeacherLoginView.as_view(), name='teacher_login'),
     path('testing/', ProtectedTeacherView.as_view(), name='protected_teacher'),
-    path('admin/', AdminLoginView.as_view(), name='admin_login'),
+    path('adminPanel/', AdminLoginView.as_view(), name='admin_login'),
     path('get/', ProtectedAdminView.as_view(), name='get_admin'),
 ]

@@ -9,8 +9,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-HASH_PASSWORD1 = os.getenv('HASH_PASSWORD1')
-HASH_PASSWORD2 = os.getenv('HASH_PASSWORD2')
+# HASH_PASSWORD1 = os.getenv('HASH_PASSWORD1')
+# HASH_PASSWORD2 = os.getenv('HASH_PASSWORD2')
+HASH_PASSWORD1= 'TWUFpOACWoBA'
+HASH_PASSWORD2= 'fLHWeoFIeShf'
 
 ACTIVE_TOKEN = None
 
@@ -32,17 +34,13 @@ class AdminLoginView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        entered_hash = request.data.get('hash') 
-
-        if not entered_hash:
+        hash1 = request.data.get('hash1')
+        hash2 = request.data.get('hash2')  
+        if not hash1 or not hash2:
             return Response({"error": "Not all hashes have been transmitted"}, status=status.HTTP_400_BAD_REQUEST)
-
-        if entered_hash == HASH_PASSWORD1 or entered_hash == HASH_PASSWORD2:
+        if hash1 == HASH_PASSWORD1 and hash2 == HASH_PASSWORD2:
             global ACTIVE_TOKEN 
-
             ACTIVE_TOKEN = secrets.token_urlsafe(32)
-            print(ACTIVE_TOKEN)
-
             return Response({
                 "message": "Login successful",
                 "token": ACTIVE_TOKEN
