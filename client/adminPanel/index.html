@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdminPanel</title>
+    <script src="assets/vue/vue.global.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            font-family: "Nunito", system-ui;
+            transition: .3s;
+        }
+        
+        html, body, #app {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* link */
+
+        .link {
+            position: relative;
+            text-decoration: none;
+            font-size: 20px;
+            cursor: pointer;
+            font-weight: normal;
+            padding-top: 3px;
+        }
+        .link:after {
+            position: absolute;
+            content: '';
+            bottom: 0;
+            display: block;
+            width: 0;
+            height: 2px;
+            background: #282c34;
+            transition: .3s;
+        }
+        .link.right:after {
+            right: 0;
+        }
+        .link.left:after {
+            left: 0;
+        }
+        .link.center:after {
+            left: 50%;
+            transform: translate(-50%);
+        }
+        .link:hover:after {
+            width: 100%;
+        }
+
+        .link.active:after {
+            width: 100%;
+        }
+
+
+
+        /* input */
+
+        input {
+            outline: none;
+            border: 2px solid black;
+            width: 100%;
+            padding: 8px 10px;
+            box-sizing: border-box;
+            font-size: 24px;
+        }
+
+        /* form */
+
+        .form {
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        /*  */
+
+        button {
+            font-size: 22px;   
+            padding: 10px;
+            background-color: #6070FF;
+            color: white;
+            border: 0;
+            border-radius: 3px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #4558ff;
+        }
+
+        /*  */
+
+        .page {
+            width: 100%;
+            height: 100%;
+        }
+
+        .page-auth {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .page-auth .form {
+            width: max(300px, 30%);
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+            box-shadow: 0 0 10px 7px rgba(0, 0, 0, 0.1);
+            padding: 40px 60px;
+            border-radius: 7px;
+        }
+
+        .page-auth .form .helpers {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .page-auth .form h3 {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 36px;
+        }
+
+        .page-auth .form input {
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 18px;   
+            border-radius: 3px;
+            border: 1px solid black;
+        }
+
+        .page-auth .form button {
+            width: 100%;
+            font-size: 22px;   
+            padding: 10px;
+            background-color: #6070FF;
+            color: white;
+            border: 0;
+            border-radius: 3px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .header {
+            width: 100%;
+            height: 60px;
+            box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+
+        .header .main {
+            width: 70%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header .main h1 {
+            font-size: 28px;
+            margin-right: 100px;
+        }
+
+        .button-exit {
+            padding: 10px 30px;
+            font-size: 18px;
+        }
+
+        .page-home, .page-administrativeData, .page-users, .page-groups, .page-dirFiles{
+            height: calc(100% - 60px);
+            display: flex;
+            justify-content: center;
+        }
+
+        .page-home .block-users {
+        }
+
+        .page  h2 {
+            margin-top: 40px;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .list-elem {
+            width: calc(100% - 44px);
+            padding: 15px 20px;
+            border: 2px solid black;
+            border-radius: 3px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .list-elem:hover {
+            background-color: rgb(218, 218, 218);
+        }
+
+        .page .main {
+            width: 70%;
+            height: auto;
+            /* overflow-y: scroll; */
+        }
+        /* .page .main::-webkit-scrollbar { */
+            /* width: 0; */
+        /* } */
+
+
+        /* notifications */
+        .notifications {
+            width: 40%;
+            position: fixed;
+            top: 0;
+            right: 0;
+            padding: 10px;
+        }
+
+        .notifications .notification-danger {
+            background-color: rgba(255, 0, 0, 0.7);
+            color: white;
+            font-size: 24px;
+            border: 0;
+            border-radius: 3px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .notifications .notification-success {
+            background-color: green;
+            color: white;
+            font-size: 24px;
+            border: 0;
+            border-radius: 3px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        /* modals */
+
+        .modals {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(128, 128, 128, 0.626);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modals .modal {
+            width: 40%;
+            /* height: 30%; */
+            background-color: white;
+            border-radius: 7px;
+            padding: 20px 20px;
+        }
+
+        .modals .modal h3 {
+            font-size: 24px;
+        }
+
+    </style>
+</head>
+<body>
+    <section id="app">
+        <section class="page page-auth" v-if="page==='auth'">
+            <div class="form">
+                <h3>Вход</h3>
+                <input type="text" v-model="forms.auth.hash1" placeholder="hash 1"> 
+                <input type="text" v-model="forms.auth.hash2" placeholder="hash 2"> 
+                <button @click="auth">Войти</button>
+            </div>
+        </section>
+        <section class="component-header" v-if="page==='home' || page==='administrativeData' || page==='users' || page==='groups' || page==='dirFiles'">
+            <div class="header">
+                <div class="main">
+                    <div style="display: flex;">
+                        <h1 @click="page='home'" style="cursor: pointer;">AIC</h1>
+                        <div style="display: flex;">
+                            <h4 :class="'link ' + ((page==='administrativeData') ? 'active' : '')" style="margin-right: 32px;" @click="page='administrativeData'">Админстративные данные</h4>
+                            <h4 :class="'link ' + ((page==='users') ? 'active' : '')" style="margin-right: 32px;" @click="page='users'">Пользователи</h4>
+                            <h4 :class="'link ' + ((page==='groups') ? 'active' : '')" style="margin-right: 32px;" @click="page='groups'">Группы</h4>
+                            <h4 :class="'link ' + ((page==='dirFiles') ? 'active' : '')" style="margin-right: 32px;" @click="page='dirFiles'">Каталоги и файлы</h4>
+                        </div>
+                    </div>
+                    <button class="button-exit" @click="()=>{logout()}">Выход</button>
+                </div>
+            </div>
+        </section>
+        <section class="page page-home" v-if="page==='home'">
+            <div class="main">
+                <div class="block-users">
+                    <h2>Пользователи</h2>
+                    <div v-for="user in home.users" :key="user.id" class="list-elem">
+                        {{user.fio}}
+                    </div>
+                </div>
+                <div class="block-groups">
+                    <h2>Группы</h2>
+                    <div v-for="group in home.groups" :key="group.id" class="list-elem">
+                        {{group.fio}}
+                    </div>
+                </div>
+                <div class="block-administrativeData">
+                    <h2>Административные данные</h2>
+                    <div v-for="admData in home.administrativeDatas" :key="admData.id" class="list-elem">
+                        {{admData.fio}}
+                    </div>
+                </div>
+            </div>
+
+        </section>
+        <section class="page page-administrativeData" v-if="page==='administrativeData'">
+            <div class="main">
+                <div class="block-administrativeData">
+                    <h2>Специальности</h2>
+                    <div v-for="admData in home.administrativeDatas" :key="admData.id" class="list-elem">
+                        {{admData.fio}}
+                    </div>
+                    <button style="width: 100%;" @click="activateModal">Создать</button>
+                    <h2>Предметы</h2>
+                    <div v-for="admData in home.administrativeDatas" :key="admData.id" class="list-elem">
+                        {{admData.fio}}
+                    </div>
+                    <button style="width: 100%;" @click="activateModal">Создать</button>
+                </div>
+            </div>
+        </section>
+        <section class="page page-users" v-if="page==='users'">
+            <div class="main">
+                <div class="block-users">
+                    <h2>Пользователи</h2>
+                    <div v-for="user in home.users" :key="user.id" class="list-elem">
+                        {{user.fio}}
+                    </div>
+                    <button style="width: 100%;" @click="activateModal">Создать</button>
+                </div>
+            </div>
+        </section>
+        <section class="page page-groups" v-if="page==='groups'">
+            <div class="main">
+                <div class="block-groups">
+                    <h2>Группы</h2>
+                    <div v-for="group in home.groups" :key="group.id" class="list-elem">
+                        {{group.fio}}
+                    </div>
+                    <button style="width: 100%;" @click="activateModal">Добавить</button>
+                </div>
+            </div>
+        </section>
+        <section class="page page-dirFiles" v-if="page==='dirFiles'">
+            <div class="main">
+                <div class="block-dirFiles">
+                    <h2>Каталоги и файлы</h2>
+                    <dir-item v-for="(item, index) in home.dirFiles" :key="index" :item="item" :level="0"></dir-item>
+                </div>
+            </div>
+        </section>
+
+        <section class="modals" v-if="modal.status" @click="deactiveModal">
+            <div class="modal" @click.stop="">
+                <div class="form">
+                    <h2 style="font-size: 32px; width: 100%; text-align: center;">Пользователь</h2>
+                    <h3>IIN</h3>
+                    <input type="text" style="margin-bottom: 10px;">
+                    <h3>Password</h3>
+                    <input type="text" style="margin-bottom: 10px;">
+                    <button style="width: 100%;" @click="deactiveModal">Создать</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="notifications">
+            <div v-for="notification in notifications" :class="((notification.code == 400) ? 'notification-danger' : '') + ((notification.code == 200) ? 'notification-success' : '')">
+                {{notification.message}}
+            </div>
+        </section>
+    </section>
+    
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    modal: {
+                        status: false,
+                        type: ""
+                    },
+                    notifications: [],
+                    forms: {
+                        auth: {
+                            hash1: "12345",
+                            hash2: "12345"
+                        }
+                    },
+                    page: localStorage.getItem('page') || 'auth',
+                    home: {
+                        users: [
+                            {id: 1, fio: "FIO 1"},
+                            {id: 2, fio: "FIO 2"},
+                            {id: 3, fio: "FIO 3"},
+                            {id: 4, fio: "FIO 4"},
+                            {id: 5, fio: "FIO 5"},
+                            {id: 5, fio: "FIO 6"},
+                            {id: 5, fio: "FIO 7"},
+                            {id: 5, fio: "FIO 8"},
+                            {id: 5, fio: "FIO 9"},
+                        ],
+                        groups: [
+                            {id: 1, fio: "Group name 1"},
+                            {id: 2, fio: "Group name 2"},
+                            {id: 3, fio: "Group name 3"},
+                            {id: 4, fio: "Group name 4"},
+                            {id: 5, fio: "Group name 5"},
+                        ],
+                        administrativeDatas: [
+                            {id: 1, fio: "Specialization 1"},
+                            {id: 2, fio: "Specialization 2"},
+                            {id: 3, fio: "Subject 1"},
+                            {id: 4, fio: "Subject 2"},
+                            {id: 5, fio: "Specialization 3"},
+                        ],
+                        dirFiles: [
+                            {
+                                type: "folder",
+                                name: "Folder 1",
+                                content: [
+                                    {
+                                        "type": "file",
+                                        "name": "File name 1.exel"
+                                    },
+                                    {
+                                        "type": "file",
+                                        "name": "File name 2.exel"
+                                    }
+                                ]
+                            },
+                            {
+                                type: "folder",
+                                name: "Folder 1",
+                                content: [
+                                    {
+                                        "type": "file",
+                                        "name": "File name 1.word"
+                                    }
+                                ]
+                            },
+                            {
+                                type: "folder",
+                                name: "Folder 1",
+                                content: [
+                                    {
+                                        type: "folder",
+                                        name: "Folder 1",
+                                        content: [
+                                            
+                                        ]
+                                    },
+                                    {
+                                        "type": "file",
+                                        "name": "File name 2.word"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "file",
+                                "name": "File name 3.exel"
+                            }
+                        ]
+                    }
+                }
+            },
+            watch: {
+                page(newVal) {
+                    this.updateLocalStoragePage();
+                }
+            },
+            created() {
+                document.onkeydown = (evt   ) => {
+                    evt = evt || window.event;
+                    var isEscape = false;
+                    if ("key" in evt) {
+                        isEscape = (evt.key === "Escape" || evt.key === "Esc");
+                    } else {
+                        isEscape = (evt.keyCode === 27);
+                    }
+                    if (isEscape) {
+                        this.deactiveModal()
+                    }
+                };
+            },
+            methods: {
+                activateModal(status=true, type='') {
+                    this.modal.status = status
+                    this.modal.type = type
+                },
+                deactiveModal() {
+                    this.modal.status = false
+                    this.modal.type = ""
+                },
+                auth() {
+                    if (this.forms.auth.hash1 != '12345' && this.forms.auth.hash2 != '12345') {
+                        this.notifications.push({
+                            message: "Вы неверно ввели пароль",
+                            code: 400
+                        })
+                        setTimeout(()=>{
+                            this.notifications.pop()
+                        }, 3000)
+
+                        return;
+                    }
+
+                    this.notifications.push({
+                        message: "Вы успешно вошли",
+                        code: 200
+                    })
+                    setTimeout(()=>{
+                        this.notifications.pop()
+                    }, 3000)
+
+
+                    this.page = "home"
+                },
+                logout() {
+
+                    this.notifications.push({
+                        message: "Вы успешно вышли",
+                        code: 200
+                    })
+                    setTimeout(()=>{
+                        this.notifications.pop()
+                    }, 3000)
+
+                    this.page = 'auth'
+                },
+                updateLocalStoragePage() {
+                    localStorage.setItem('page', this.page)
+                }
+            },
+        }).component('dir-item', {
+    props: ['item', 'level'],
+    template: `
+        <div :style="{ paddingLeft: level * 20 + 'px' }">
+            <div v-if="item.type === 'folder'" class="list-elem">
+                <h3 style='margin-bottom:20px;'>{{ item.name }}</h3>
+                <dir-item v-for="(child, index) in item.content" :key="index" :item="child" :level="level + 1"></dir-item>
+            </div>
+            <div v-else class="list-elem">{{ item.name }}</div>
+        </div>
+    `
+}).mount('#app')
+    </script>
+</body>
+</html>
